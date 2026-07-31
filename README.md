@@ -170,9 +170,44 @@ This prints a local URL with an auth token — open it, click **Connect**, go
 to the **Tools** tab, and run the tool with a sample query to see the raw
 JSON response.
 
+## Orchestrator agent
+
+`backend/orchestrator.py` is a minimal agent (built with `strands-agents`,
+using Claude as the LLM) that connects to both MCP servers as tools and
+lets the LLM decide what arguments to send each one from a single
+natural-language query. It deliberately does **no fusion** yet — it just
+calls both tools and prints each one's raw, unmerged results side by side,
+along with the exact arguments the LLM chose to send each tool.
+
+Requires:
+
+- Both `ANTHROPIC_API_KEY` and `ANTHROPIC_MODEL` set in `.env` (get a key at
+  https://console.anthropic.com/ — usage for this is tiny, a few cents).
+- The search API running (`uvicorn main:app --reload`, from `backend/`) — the
+  orchestrator spawns both MCP servers itself, which in turn call the API.
+
+Run it with a natural-language query as an argument:
+
+```bash
+cd backend
+python3 orchestrator.py "family car, low mileage, under 300000 TL, diesel"
+```
+
+Output shows two sections: the arguments sent to `keyword_search` and
+`semantic_search` respectively, then each tool's raw JSON results. In
+testing, the LLM reliably:
+
+- Strips out things Elasticsearch can't understand (numeric ranges like
+  "under 300000 TL") from the keyword-search query, keeping only literal
+  terms (fuel type, body style, brand).
+- Passes the semantic-search query close to verbatim, since that engine
+  understands full sentences.
+- Translates non-English queries into English before searching, since the
+  sample dataset's descriptions are in English.
+
 ## What's next
 
 Future steps (not yet done):
 
 - Structured filters in the API (year range, price range, fuel type, color as its own field) alongside the free-text query.
-- A fusion agent that calls both MCP tools and combines/reasons over their results (replacing the earlier fixed Reciprocal Rank Fusion approach, which merged results directly in the API).
+- Actual fusion logic in the orchestrator: combining/ranking the two raw result sets into one answer, instead of just printing them side by side.

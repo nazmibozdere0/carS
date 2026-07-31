@@ -16,4 +16,7 @@ QDRANT_COLLECTION = os.getenv("QDRANT_COLLECTION", "car_listings")
 
 EMBEDDING_MODEL = os.getenv("EMBEDDING_MODEL", "all-MiniLM-L6-v2")
 
+ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY")
+ANTHROPIC_MODEL = os.getenv("ANTHROPIC_MODEL", "claude-sonnet-5")
+
 DATA_FILE = Path(__file__).resolve().parent.parent / "data" / "car_listings.json"
