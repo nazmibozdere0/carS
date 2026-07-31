@@ -1,0 +1,602 @@
+[
+  {
+    "id": 1,
+    "make": "Audi",
+    "model": "A4",
+    "year": 2015,
+    "mileage": 124168,
+    "price": 24100,
+    "fuel_type": "Gasoline",
+    "description": "2015 Audi A4 in white with 124,168 miles. Runs in like new condition. Fuel type: Gasoline. Equipped with backup camera, remote start, heated seats, Android Auto, all-wheel drive, third-row seating. Single owner, garage kept."
+  },
+  {
+    "id": 2,
+    "make": "Nissan",
+    "model": "Sentra",
+    "year": 2017,
+    "mileage": 99502,
+    "price": 8300,
+    "fuel_type": "Diesel",
+    "description": "2017 Nissan Sentra in blue with 99,502 miles. Runs in excellent condition. Fuel type: Diesel. Equipped with all-wheel drive, adaptive cruise control, leather seats, sunroof. Recently serviced with new brakes and tires."
+  },
+  {
+    "id": 3,
+    "make": "Chevrolet",
+    "model": "Malibu",
+    "year": 2019,
+    "mileage": 80131,
+    "price": 11000,
+    "fuel_type": "Gasoline",
+    "description": "2019 Chevrolet Malibu in black with 80,131 miles. Runs in well-maintained condition. Fuel type: Gasoline. Equipped with remote start, adaptive cruise control, heated seats. Regularly maintained with full service records."
+  },
+  {
+    "id": 4,
+    "make": "Audi",
+    "model": "A4",
+    "year": 2023,
+    "mileage": 35342,
+    "price": 35300,
+    "fuel_type": "Gasoline",
+    "description": "2023 Audi A4 in black with 35,342 miles. Runs in very good condition. Fuel type: Gasoline. Equipped with heated seats, premium sound system, Android Auto, remote start, adaptive cruise control. Regularly maintained with full service records."
+  },
+  {
+    "id": 5,
+    "make": "Kia",
+    "model": "Soul",
+    "year": 2024,
+    "mileage": 23201,
+    "price": 18500,
+    "fuel_type": "Gasoline",
+    "description": "2024 Kia Soul in white with 23,201 miles. Runs in like new condition. Fuel type: Gasoline. Equipped with third-row seating, all-wheel drive, Android Auto, Apple CarPlay. Perfect for families needing extra space."
+  },
+  {
+    "id": 6,
+    "make": "Hyundai",
+    "model": "Elantra",
+    "year": 2018,
+    "mileage": 85941,
+    "price": 10100,
+    "fuel_type": "Diesel",
+    "description": "2018 Hyundai Elantra in black with 85,941 miles. Runs in very good condition. Fuel type: Diesel. Equipped with lane departure warning, leather seats, adaptive cruise control. Regularly maintained with full service records."
+  },
+  {
+    "id": 7,
+    "make": "Honda",
+    "model": "Civic",
+    "year": 2017,
+    "mileage": 103424,
+    "price": 11300,
+    "fuel_type": "Gasoline",
+    "description": "2017 Honda Civic in beige with 103,424 miles. Runs in very good condition. Fuel type: Gasoline. Equipped with Apple CarPlay, Android Auto, all-wheel drive, third-row seating, lane departure warning. Regularly maintained with full service records."
+  },
+  {
+    "id": 8,
+    "make": "Mazda",
+    "model": "CX-5",
+    "year": 2020,
+    "mileage": 63312,
+    "price": 13600,
+    "fuel_type": "Electric",
+    "description": "2020 Mazda CX-5 in silver with 63,312 miles. Runs in like new condition. Fuel type: Electric. Equipped with heated seats, lane departure warning, backup camera, remote start, Apple CarPlay, keyless entry. Great commuter car with excellent fuel economy."
+  },
+  {
+    "id": 9,
+    "make": "Tesla",
+    "model": "Model 3",
+    "year": 2015,
+    "mileage": 116966,
+    "price": 22400,
+    "fuel_type": "Electric",
+    "description": "2015 Tesla Model 3 in black with 116,966 miles. Runs in excellent condition. Fuel type: Electric. Equipped with lane departure warning, keyless entry, leather seats, heated seats, sunroof. Great commuter car with excellent fuel economy."
+  },
+  {
+    "id": 10,
+    "make": "Ford",
+    "model": "Escape",
+    "year": 2021,
+    "mileage": 58566,
+    "price": 16400,
+    "fuel_type": "Gasoline",
+    "description": "2021 Ford Escape in blue with 58,566 miles. Runs in like new condition. Fuel type: Gasoline. Equipped with third-row seating, heated seats, keyless entry, sunroof. Non-smoker vehicle, no pet odors."
+  },
+  {
+    "id": 11,
+    "make": "Ford",
+    "model": "Mustang",
+    "year": 2019,
+    "mileage": 77391,
+    "price": 11500,
+    "fuel_type": "Diesel",
+    "description": "2019 Ford Mustang in beige with 77,391 miles. Runs in excellent condition. Fuel type: Diesel. Equipped with remote start, leather seats, lane departure warning. Regularly maintained with full service records."
+  },
+  {
+    "id": 12,
+    "make": "BMW",
+    "model": "3 Series",
+    "year": 2014,
+    "mileage": 127034,
+    "price": 14400,
+    "fuel_type": "Gasoline",
+    "description": "2014 BMW 3 Series in white with 127,034 miles. Runs in well-maintained condition. Fuel type: Gasoline. Equipped with lane departure warning, third-row seating, remote start. Recently serviced with new brakes and tires."
+  },
+  {
+    "id": 13,
+    "make": "Ford",
+    "model": "F-150",
+    "year": 2024,
+    "mileage": 17007,
+    "price": 22900,
+    "fuel_type": "Gasoline",
+    "description": "2024 Ford F-150 in gray with 17,007 miles. Runs in like new condition. Fuel type: Gasoline. Equipped with all-wheel drive, sunroof, adaptive cruise control, keyless entry. Priced to sell quickly, motivated seller."
+  },
+  {
+    "id": 14,
+    "make": "Kia",
+    "model": "Sportage",
+    "year": 2022,
+    "mileage": 44781,
+    "price": 15900,
+    "fuel_type": "Hybrid",
+    "description": "2022 Kia Sportage in red with 44,781 miles. Runs in excellent condition. Fuel type: Hybrid. Equipped with navigation system, Android Auto, backup camera, heated seats. Single owner, garage kept."
+  },
+  {
+    "id": 15,
+    "make": "Chevrolet",
+    "model": "Equinox",
+    "year": 2015,
+    "mileage": 127567,
+    "price": 5500,
+    "fuel_type": "Gasoline",
+    "description": "2015 Chevrolet Equinox in beige with 127,567 miles. Runs in very good condition. Fuel type: Gasoline. Equipped with all-wheel drive, navigation system, premium sound system, blind spot monitoring. Non-smoker vehicle, no pet odors."
+  },
+  {
+    "id": 16,
+    "make": "Subaru",
+    "model": "Outback",
+    "year": 2020,
+    "mileage": 61561,
+    "price": 18700,
+    "fuel_type": "Gasoline",
+    "description": "2020 Subaru Outback in red with 61,561 miles. Runs in well-maintained condition. Fuel type: Gasoline. Equipped with blind spot monitoring, premium sound system, all-wheel drive, backup camera, keyless entry, heated seats. Single owner, garage kept."
+  },
+  {
+    "id": 17,
+    "make": "Hyundai",
+    "model": "Tucson",
+    "year": 2019,
+    "mileage": 77601,
+    "price": 12100,
+    "fuel_type": "Gasoline",
+    "description": "2019 Hyundai Tucson in dark green with 77,601 miles. Runs in very good condition. Fuel type: Gasoline. Equipped with blind spot monitoring, Android Auto, heated seats, remote start, third-row seating. Clean title, no accidents reported."
+  },
+  {
+    "id": 18,
+    "make": "Toyota",
+    "model": "Highlander",
+    "year": 2024,
+    "mileage": 20172,
+    "price": 21300,
+    "fuel_type": "Diesel",
+    "description": "2024 Toyota Highlander in gray with 20,172 miles. Runs in very good condition. Fuel type: Diesel. Equipped with blind spot monitoring, remote start, Android Auto, adaptive cruise control, backup camera, Apple CarPlay. Great commuter car with excellent fuel economy."
+  },
+  {
+    "id": 19,
+    "make": "Toyota",
+    "model": "Camry",
+    "year": 2020,
+    "mileage": 65332,
+    "price": 15700,
+    "fuel_type": "Hybrid",
+    "description": "2020 Toyota Camry in beige with 65,332 miles. Runs in very good condition. Fuel type: Hybrid. Equipped with sunroof, Android Auto, backup camera, navigation system. Single owner, garage kept."
+  },
+  {
+    "id": 20,
+    "make": "Mercedes-Benz",
+    "model": "GLC",
+    "year": 2014,
+    "mileage": 138971,
+    "price": 20600,
+    "fuel_type": "Gasoline",
+    "description": "2014 Mercedes-Benz GLC in silver with 138,971 miles. Runs in excellent condition. Fuel type: Gasoline. Equipped with premium sound system, Apple CarPlay, heated seats. Clean title, no accidents reported."
+  },
+  {
+    "id": 21,
+    "make": "Jeep",
+    "model": "Wrangler",
+    "year": 2017,
+    "mileage": 91156,
+    "price": 17300,
+    "fuel_type": "Electric",
+    "description": "2017 Jeep Wrangler in white with 91,156 miles. Runs in well-maintained condition. Fuel type: Electric. Equipped with remote start, sunroof, Android Auto, keyless entry, leather seats. Non-smoker vehicle, no pet odors."
+  },
+  {
+    "id": 22,
+    "make": "BMW",
+    "model": "5 Series",
+    "year": 2020,
+    "mileage": 71419,
+    "price": 26200,
+    "fuel_type": "Gasoline",
+    "description": "2020 BMW 5 Series in red with 71,419 miles. Runs in excellent condition. Fuel type: Gasoline. Equipped with blind spot monitoring, navigation system, premium sound system. Clean title, no accidents reported."
+  },
+  {
+    "id": 23,
+    "make": "Honda",
+    "model": "Civic",
+    "year": 2022,
+    "mileage": 44720,
+    "price": 16800,
+    "fuel_type": "Gasoline",
+    "description": "2022 Honda Civic in red with 44,720 miles. Runs in good condition. Fuel type: Gasoline. Equipped with blind spot monitoring, premium sound system, third-row seating, all-wheel drive. Regularly maintained with full service records."
+  },
+  {
+    "id": 24,
+    "make": "Tesla",
+    "model": "Model Y",
+    "year": 2024,
+    "mileage": 25056,
+    "price": 38500,
+    "fuel_type": "Electric",
+    "description": "2024 Tesla Model Y in blue with 25,056 miles. Runs in excellent condition. Fuel type: Electric. Equipped with sunroof, heated seats, premium sound system, all-wheel drive. Recently serviced with new brakes and tires."
+  },
+  {
+    "id": 25,
+    "make": "BMW",
+    "model": "X3",
+    "year": 2018,
+    "mileage": 82969,
+    "price": 24000,
+    "fuel_type": "Gasoline",
+    "description": "2018 BMW X3 in beige with 82,969 miles. Runs in good condition. Fuel type: Gasoline. Equipped with heated seats, keyless entry, adaptive cruise control. Regularly maintained with full service records."
+  },
+  {
+    "id": 26,
+    "make": "Toyota",
+    "model": "RAV4",
+    "year": 2014,
+    "mileage": 128106,
+    "price": 4000,
+    "fuel_type": "Gasoline",
+    "description": "2014 Toyota RAV4 in blue with 128,106 miles. Runs in very good condition. Fuel type: Gasoline. Equipped with third-row seating, all-wheel drive, adaptive cruise control, remote start, backup camera, heated seats. Clean title, no accidents reported."
+  },
+  {
+    "id": 27,
+    "make": "Lexus",
+    "model": "RX 350",
+    "year": 2016,
+    "mileage": 102721,
+    "price": 24300,
+    "fuel_type": "Electric",
+    "description": "2016 Lexus RX 350 in black with 102,721 miles. Runs in good condition. Fuel type: Electric. Equipped with remote start, lane departure warning, backup camera, leather seats, Android Auto. Non-smoker vehicle, no pet odors."
+  },
+  {
+    "id": 28,
+    "make": "Jeep",
+    "model": "Grand Cherokee",
+    "year": 2015,
+    "mileage": 118855,
+    "price": 9400,
+    "fuel_type": "Gasoline",
+    "description": "2015 Jeep Grand Cherokee in dark green with 118,855 miles. Runs in like new condition. Fuel type: Gasoline. Equipped with remote start, Android Auto, Apple CarPlay, lane departure warning. Great commuter car with excellent fuel economy."
+  },
+  {
+    "id": 29,
+    "make": "Toyota",
+    "model": "Corolla",
+    "year": 2016,
+    "mileage": 109696,
+    "price": 5100,
+    "fuel_type": "Hybrid",
+    "description": "2016 Toyota Corolla in gray with 109,696 miles. Runs in good condition. Fuel type: Hybrid. Equipped with lane departure warning, all-wheel drive, heated seats, adaptive cruise control. Single owner, garage kept."
+  },
+  {
+    "id": 30,
+    "make": "Subaru",
+    "model": "Outback",
+    "year": 2017,
+    "mileage": 95418,
+    "price": 7700,
+    "fuel_type": "Gasoline",
+    "description": "2017 Subaru Outback in blue with 95,418 miles. Runs in very good condition. Fuel type: Gasoline. Equipped with backup camera, keyless entry, Android Auto, adaptive cruise control. Priced to sell quickly, motivated seller."
+  },
+  {
+    "id": 31,
+    "make": "BMW",
+    "model": "X3",
+    "year": 2015,
+    "mileage": 124166,
+    "price": 21800,
+    "fuel_type": "Diesel",
+    "description": "2015 BMW X3 in red with 124,166 miles. Runs in excellent condition. Fuel type: Diesel. Equipped with remote start, sunroof, Apple CarPlay. Regularly maintained with full service records."
+  },
+  {
+    "id": 32,
+    "make": "Toyota",
+    "model": "RAV4",
+    "year": 2015,
+    "mileage": 120331,
+    "price": 6700,
+    "fuel_type": "Electric",
+    "description": "2015 Toyota RAV4 in red with 120,331 miles. Runs in well-maintained condition. Fuel type: Electric. Equipped with adaptive cruise control, navigation system, Android Auto. Regularly maintained with full service records."
+  },
+  {
+    "id": 33,
+    "make": "Toyota",
+    "model": "RAV4",
+    "year": 2020,
+    "mileage": 75117,
+    "price": 14000,
+    "fuel_type": "Diesel",
+    "description": "2020 Toyota RAV4 in gray with 75,117 miles. Runs in good condition. Fuel type: Diesel. Equipped with heated seats, keyless entry, leather seats, navigation system, lane departure warning, remote start. Regularly maintained with full service records."
+  },
+  {
+    "id": 34,
+    "make": "Subaru",
+    "model": "Impreza",
+    "year": 2018,
+    "mileage": 88096,
+    "price": 14400,
+    "fuel_type": "Hybrid",
+    "description": "2018 Subaru Impreza in silver with 88,096 miles. Runs in very good condition. Fuel type: Hybrid. Equipped with keyless entry, adaptive cruise control, remote start, all-wheel drive, Apple CarPlay, navigation system. Regularly maintained with full service records."
+  },
+  {
+    "id": 35,
+    "make": "Hyundai",
+    "model": "Tucson",
+    "year": 2022,
+    "mileage": 45709,
+    "price": 15700,
+    "fuel_type": "Gasoline",
+    "description": "2022 Hyundai Tucson in red with 45,709 miles. Runs in well-maintained condition. Fuel type: Gasoline. Equipped with blind spot monitoring, keyless entry, Android Auto, third-row seating, remote start, Apple CarPlay. Clean title, no accidents reported."
+  },
+  {
+    "id": 36,
+    "make": "Mercedes-Benz",
+    "model": "C-Class",
+    "year": 2022,
+    "mileage": 41055,
+    "price": 36800,
+    "fuel_type": "Electric",
+    "description": "2022 Mercedes-Benz C-Class in gray with 41,055 miles. Runs in good condition. Fuel type: Electric. Equipped with lane departure warning, Android Auto, Apple CarPlay, backup camera. Single owner, garage kept."
+  },
+  {
+    "id": 37,
+    "make": "BMW",
+    "model": "3 Series",
+    "year": 2021,
+    "mileage": 49762,
+    "price": 30300,
+    "fuel_type": "Hybrid",
+    "description": "2021 BMW 3 Series in gray with 49,762 miles. Runs in well-maintained condition. Fuel type: Hybrid. Equipped with adaptive cruise control, Android Auto, Apple CarPlay, keyless entry, backup camera, heated seats. Great commuter car with excellent fuel economy."
+  },
+  {
+    "id": 38,
+    "make": "Chevrolet",
+    "model": "Equinox",
+    "year": 2016,
+    "mileage": 105596,
+    "price": 8500,
+    "fuel_type": "Diesel",
+    "description": "2016 Chevrolet Equinox in white with 105,596 miles. Runs in well-maintained condition. Fuel type: Diesel. Equipped with lane departure warning, blind spot monitoring, keyless entry, third-row seating. Priced to sell quickly, motivated seller."
+  },
+  {
+    "id": 39,
+    "make": "Kia",
+    "model": "Sportage",
+    "year": 2023,
+    "mileage": 36352,
+    "price": 16100,
+    "fuel_type": "Hybrid",
+    "description": "2023 Kia Sportage in silver with 36,352 miles. Runs in well-maintained condition. Fuel type: Hybrid. Equipped with sunroof, lane departure warning, Android Auto, keyless entry, remote start, third-row seating. Perfect for families needing extra space."
+  },
+  {
+    "id": 40,
+    "make": "Audi",
+    "model": "A4",
+    "year": 2017,
+    "mileage": 91254,
+    "price": 25900,
+    "fuel_type": "Gasoline",
+    "description": "2017 Audi A4 in gray with 91,254 miles. Runs in good condition. Fuel type: Gasoline. Equipped with leather seats, third-row seating, heated seats, Apple CarPlay, all-wheel drive. Non-smoker vehicle, no pet odors."
+  },
+  {
+    "id": 41,
+    "make": "Hyundai",
+    "model": "Elantra",
+    "year": 2016,
+    "mileage": 109605,
+    "price": 6600,
+    "fuel_type": "Hybrid",
+    "description": "2016 Hyundai Elantra in black with 109,605 miles. Runs in very good condition. Fuel type: Hybrid. Equipped with adaptive cruise control, lane departure warning, navigation system, all-wheel drive, backup camera, premium sound system. Great commuter car with excellent fuel economy."
+  },
+  {
+    "id": 42,
+    "make": "Subaru",
+    "model": "Outback",
+    "year": 2014,
+    "mileage": 130596,
+    "price": 7700,
+    "fuel_type": "Gasoline",
+    "description": "2014 Subaru Outback in dark green with 130,596 miles. Runs in like new condition. Fuel type: Gasoline. Equipped with blind spot monitoring, Android Auto, sunroof, adaptive cruise control. Perfect for families needing extra space."
+  },
+  {
+    "id": 43,
+    "make": "Toyota",
+    "model": "Corolla",
+    "year": 2020,
+    "mileage": 62893,
+    "price": 13500,
+    "fuel_type": "Hybrid",
+    "description": "2020 Toyota Corolla in silver with 62,893 miles. Runs in like new condition. Fuel type: Hybrid. Equipped with remote start, adaptive cruise control, navigation system. Single owner, garage kept."
+  },
+  {
+    "id": 44,
+    "make": "Honda",
+    "model": "Accord",
+    "year": 2024,
+    "mileage": 27169,
+    "price": 21200,
+    "fuel_type": "Hybrid",
+    "description": "2024 Honda Accord in black with 27,169 miles. Runs in good condition. Fuel type: Hybrid. Equipped with leather seats, Android Auto, blind spot monitoring, remote start, all-wheel drive, adaptive cruise control. Regularly maintained with full service records."
+  },
+  {
+    "id": 45,
+    "make": "Hyundai",
+    "model": "Sonata",
+    "year": 2018,
+    "mileage": 90293,
+    "price": 13300,
+    "fuel_type": "Diesel",
+    "description": "2018 Hyundai Sonata in gray with 90,293 miles. Runs in excellent condition. Fuel type: Diesel. Equipped with lane departure warning, backup camera, Android Auto. Non-smoker vehicle, no pet odors."
+  },
+  {
+    "id": 46,
+    "make": "Toyota",
+    "model": "Corolla",
+    "year": 2023,
+    "mileage": 29117,
+    "price": 19600,
+    "fuel_type": "Gasoline",
+    "description": "2023 Toyota Corolla in white with 29,117 miles. Runs in like new condition. Fuel type: Gasoline. Equipped with blind spot monitoring, all-wheel drive, sunroof, leather seats. Recently serviced with new brakes and tires."
+  },
+  {
+    "id": 47,
+    "make": "Tesla",
+    "model": "Model 3",
+    "year": 2023,
+    "mileage": 39203,
+    "price": 32300,
+    "fuel_type": "Electric",
+    "description": "2023 Tesla Model 3 in black with 39,203 miles. Runs in good condition. Fuel type: Electric. Equipped with adaptive cruise control, all-wheel drive, Android Auto, heated seats, navigation system, lane departure warning. Clean title, no accidents reported."
+  },
+  {
+    "id": 48,
+    "make": "Lexus",
+    "model": "RX 350",
+    "year": 2018,
+    "mileage": 86561,
+    "price": 26800,
+    "fuel_type": "Electric",
+    "description": "2018 Lexus RX 350 in black with 86,561 miles. Runs in good condition. Fuel type: Electric. Equipped with keyless entry, leather seats, heated seats, third-row seating, remote start, premium sound system. Single owner, garage kept."
+  },
+  {
+    "id": 49,
+    "make": "Hyundai",
+    "model": "Sonata",
+    "year": 2021,
+    "mileage": 63022,
+    "price": 12300,
+    "fuel_type": "Hybrid",
+    "description": "2021 Hyundai Sonata in blue with 63,022 miles. Runs in like new condition. Fuel type: Hybrid. Equipped with blind spot monitoring, adaptive cruise control, all-wheel drive, navigation system, sunroof, leather seats. Non-smoker vehicle, no pet odors."
+  },
+  {
+    "id": 50,
+    "make": "Honda",
+    "model": "Accord",
+    "year": 2018,
+    "mileage": 94266,
+    "price": 12300,
+    "fuel_type": "Hybrid",
+    "description": "2018 Honda Accord in dark green with 94,266 miles. Runs in good condition. Fuel type: Hybrid. Equipped with blind spot monitoring, premium sound system, leather seats. Recently serviced with new brakes and tires."
+  },
+  {
+    "id": 51,
+    "make": "Subaru",
+    "model": "Forester",
+    "year": 2017,
+    "mileage": 97107,
+    "price": 7900,
+    "fuel_type": "Gasoline",
+    "description": "2017 Subaru Forester in blue with 97,107 miles. Runs in like new condition. Fuel type: Gasoline. Equipped with third-row seating, Android Auto, heated seats. Non-smoker vehicle, no pet odors."
+  },
+  {
+    "id": 52,
+    "make": "Hyundai",
+    "model": "Sonata",
+    "year": 2021,
+    "mileage": 57445,
+    "price": 12800,
+    "fuel_type": "Diesel",
+    "description": "2021 Hyundai Sonata in beige with 57,445 miles. Runs in well-maintained condition. Fuel type: Diesel. Equipped with heated seats, sunroof, Android Auto. Great commuter car with excellent fuel economy."
+  },
+  {
+    "id": 53,
+    "make": "Lexus",
+    "model": "RX 350",
+    "year": 2017,
+    "mileage": 97173,
+    "price": 25800,
+    "fuel_type": "Hybrid",
+    "description": "2017 Lexus RX 350 in red with 97,173 miles. Runs in good condition. Fuel type: Hybrid. Equipped with sunroof, remote start, premium sound system, Android Auto, heated seats, all-wheel drive. Priced to sell quickly, motivated seller."
+  },
+  {
+    "id": 54,
+    "make": "Honda",
+    "model": "Pilot",
+    "year": 2022,
+    "mileage": 48954,
+    "price": 19100,
+    "fuel_type": "Gasoline",
+    "description": "2022 Honda Pilot in blue with 48,954 miles. Runs in like new condition. Fuel type: Gasoline. Equipped with heated seats, premium sound system, Android Auto, sunroof, lane departure warning. Priced to sell quickly, motivated seller."
+  },
+  {
+    "id": 55,
+    "make": "Ford",
+    "model": "Explorer",
+    "year": 2018,
+    "mileage": 92924,
+    "price": 14700,
+    "fuel_type": "Gasoline",
+    "description": "2018 Ford Explorer in blue with 92,924 miles. Runs in very good condition. Fuel type: Gasoline. Equipped with heated seats, premium sound system, backup camera, navigation system, sunroof, blind spot monitoring. Perfect for families needing extra space."
+  },
+  {
+    "id": 56,
+    "make": "Kia",
+    "model": "Sportage",
+    "year": 2019,
+    "mileage": 77438,
+    "price": 6100,
+    "fuel_type": "Gasoline",
+    "description": "2019 Kia Sportage in beige with 77,438 miles. Runs in excellent condition. Fuel type: Gasoline. Equipped with adaptive cruise control, blind spot monitoring, heated seats. Single owner, garage kept."
+  },
+  {
+    "id": 57,
+    "make": "Ford",
+    "model": "Mustang",
+    "year": 2016,
+    "mileage": 113658,
+    "price": 4000,
+    "fuel_type": "Gasoline",
+    "description": "2016 Ford Mustang in dark green with 113,658 miles. Runs in like new condition. Fuel type: Gasoline. Equipped with lane departure warning, third-row seating, adaptive cruise control, blind spot monitoring. Perfect for families needing extra space."
+  },
+  {
+    "id": 58,
+    "make": "Mercedes-Benz",
+    "model": "E-Class",
+    "year": 2023,
+    "mileage": 23948,
+    "price": 37800,
+    "fuel_type": "Hybrid",
+    "description": "2023 Mercedes-Benz E-Class in white with 23,948 miles. Runs in very good condition. Fuel type: Hybrid. Equipped with sunroof, keyless entry, heated seats, Apple CarPlay. Non-smoker vehicle, no pet odors."
+  },
+  {
+    "id": 59,
+    "make": "Ford",
+    "model": "Explorer",
+    "year": 2022,
+    "mileage": 44260,
+    "price": 18400,
+    "fuel_type": "Hybrid",
+    "description": "2022 Ford Explorer in black with 44,260 miles. Runs in very good condition. Fuel type: Hybrid. Equipped with all-wheel drive, sunroof, remote start, blind spot monitoring, heated seats. Non-smoker vehicle, no pet odors."
+  },
+  {
+    "id": 60,
+    "make": "BMW",
+    "model": "5 Series",
+    "year": 2024,
+    "mileage": 22133,
+    "price": 35600,
+    "fuel_type": "Electric",
+    "description": "2024 BMW 5 Series in dark green with 22,133 miles. Runs in excellent condition. Fuel type: Electric. Equipped with keyless entry, Apple CarPlay, sunroof, premium sound system. Clean title, no accidents reported."
+  }
+]
