@@ -151,19 +151,19 @@ any MCP-compatible client) can call it as a tool:
 
 - `backend/mcp_servers/keyword_search_mcp.py` — exposes one tool, `keyword_search`, which calls `GET /search/keyword`.
 - `backend/mcp_servers/semantic_search_mcp.py` — exposes one tool, `semantic_search`, which calls `GET /search/semantic`.
+- `backend/mcp_servers/fusion_mcp.py` — exposes one tool, `fuse_results`, which merges a keyword-search result list and a semantic-search result list into one ranked list. Pure math (Reciprocal Rank Fusion, see below) — no database or search-API call, so it works standalone without the API running.
 
-Both are thin wrappers — they call the running search API over HTTP rather
-than talking to Elasticsearch/Qdrant directly, so **the search API
-(`uvicorn main:app`) must already be running** before starting either MCP
-server.
+The first two are thin wrappers — they call the running search API over HTTP
+rather than talking to Elasticsearch/Qdrant directly, so **the search API
+(`uvicorn main:app`) must already be running** before starting either one.
 
-Test either one standalone with the MCP Inspector (a browser-based test
+Test any of them standalone with the MCP Inspector (a browser-based test
 client for MCP tools, install via `pip install "mcp[cli]"`, requires `uv` —
 `pip install uv` — and Node's `npx` on your PATH):
 
 ```bash
 cd backend
-mcp dev mcp_servers/keyword_search_mcp.py    # or semantic_search_mcp.py
+mcp dev mcp_servers/keyword_search_mcp.py    # or semantic_search_mcp.py, fusion_mcp.py
 ```
 
 This prints a local URL with an auth token — open it, click **Connect**, go
@@ -172,19 +172,25 @@ JSON response.
 
 ## Orchestrator agent
 
-`backend/orchestrator.py` is a minimal agent (built with `strands-agents`,
-using Claude as the LLM) that connects to both MCP servers as tools and
-lets the LLM decide what arguments to send each one from a single
-natural-language query. It deliberately does **no fusion** yet — it just
-calls both tools and prints each one's raw, unmerged results side by side,
-along with the exact arguments the LLM chose to send each tool.
+`backend/orchestrator.py` is an agent (built with `strands-agents`, using
+Claude as the LLM) that connects to all three MCP servers as tools and,
+for a single natural-language query, calls them in sequence:
+
+1. `keyword_search` — raw Elasticsearch results.
+2. `semantic_search` — raw Qdrant results.
+3. `fuse_results` — merges the two raw lists above into one ranked list.
+
+The LLM's job is only to pick good arguments for steps 1 and 2, and to pass
+their outputs into step 3 — the actual merging in step 3 is deterministic
+math (RRF), not an LLM decision.
 
 Requires:
 
 - Both `ANTHROPIC_API_KEY` and `ANTHROPIC_MODEL` set in `.env` (get a key at
   https://console.anthropic.com/ — usage for this is tiny, a few cents).
 - The search API running (`uvicorn main:app --reload`, from `backend/`) — the
-  orchestrator spawns both MCP servers itself, which in turn call the API.
+  orchestrator spawns all three MCP servers itself; the first two in turn
+  call the API.
 
 Run it with a natural-language query as an argument:
 
@@ -193,21 +199,34 @@ cd backend
 python3 orchestrator.py "family car, low mileage, under 300000 TL, diesel"
 ```
 
-Output shows two sections: the arguments sent to `keyword_search` and
-`semantic_search` respectively, then each tool's raw JSON results. In
-testing, the LLM reliably:
+Output shows one section per tool call, in order: the arguments sent and the
+raw result returned, ending with `fuse_results`' merged ranking. In testing
+with a few different queries:
 
-- Strips out things Elasticsearch can't understand (numeric ranges like
-  "under 300000 TL") from the keyword-search query, keeping only literal
-  terms (fuel type, body style, brand).
-- Passes the semantic-search query close to verbatim, since that engine
-  understands full sentences.
-- Translates non-English queries into English before searching, since the
-  sample dataset's descriptions are in English.
+- A listing that ranked well in **both** raw lists (e.g. a diesel BMW X3
+  that was #1 in keyword results and #3 in semantic results) rose to the
+  top of the merged list, with roughly double the score of anything that
+  only appeared in one list.
+- If the LLM sends a query `keyword_search` can't match at all (e.g. it
+  forgets to translate a non-English query, so Elasticsearch — whose data
+  is in English — returns zero hits), `fuse_results` doesn't fail; it just
+  falls back to ranking by whichever list actually has results.
+- Fusion only re-ranks what the two searches already found — it can't fix
+  a bad match either engine made (e.g. a car well outside the requested
+  price range still shows up, since neither engine currently filters on
+  price; see "What's next" below).
+
+### How Reciprocal Rank Fusion (RRF) works
+
+For each listing, its score is `1 / (60 + rank)` in a given list (`rank`
+starts at 0 for the top result; `60` is a standard constant that flattens
+the impact of exact rank position). Scores from both lists are summed per
+listing ID, and the final list is sorted by that combined score — so a
+listing found by only one engine can still place, but one confirmed by
+both engines almost always ranks higher.
 
 ## What's next
 
 Future steps (not yet done):
 
-- Structured filters in the API (year range, price range, fuel type, color as its own field) alongside the free-text query.
-- Actual fusion logic in the orchestrator: combining/ranking the two raw result sets into one answer, instead of just printing them side by side.
+- Structured filters (year range, price range, fuel type, color as its own field) applied to both searches before fusion, so numeric constraints like "under 300000 TL" are actually enforced instead of just hinted at in text.
