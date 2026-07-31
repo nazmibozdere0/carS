@@ -117,9 +117,42 @@ curl "http://localhost:9200/car_listings/_search?q=make:Toyota&pretty"
 curl "http://localhost:6333/collections/car_listings"
 ```
 
+## Running the search API
+
+Once the data is loaded (previous section), start the API:
+
+```bash
+cd backend
+uvicorn main:app --reload
+```
+
+Open **http://localhost:8000/docs** in a browser — this is an interactive test
+page (Swagger UI) generated automatically by the API framework. Expand the
+`POST /search` endpoint, click "Try it out", enter a query like:
+
+```json
+{ "query": "spacious family SUV with good fuel economy", "top_k": 5 }
+```
+
+and click "Execute" to see ranked results — no command line needed.
+
+Or from the terminal:
+
+```bash
+curl -X POST http://localhost:8000/search \
+  -H "Content-Type: application/json" \
+  -d '{"query": "spacious family SUV with good fuel economy", "top_k": 5}'
+```
+
+### How the hybrid search works
+
+1. The query text is sent to **Elasticsearch** as a keyword/text match (against `description`, `make`, `model`) — good at exact words.
+2. The same query text is embedded into a vector and sent to **Qdrant** for a semantic nearest-neighbor search — good at matching meaning, even with different wording.
+3. Both ranked lists are merged with **Reciprocal Rank Fusion (RRF)**: each listing gets a score based on how high it ranked in each list (`1 / (60 + rank)`, summed across both lists), then the merged list is sorted by that combined score. A listing that ranks well in both searches rises to the top.
+
 ## What's next
 
 Future steps (not yet done):
 
-- A simple search API that queries both Elasticsearch and Qdrant and merges results.
-- The "fusion agent" that intelligently combines keyword and semantic results.
+- Structured filters in the API (year range, price range, fuel type) alongside the free-text query.
+- A smarter fusion agent (e.g. an LLM that reasons over both result sets) instead of the fixed RRF formula.

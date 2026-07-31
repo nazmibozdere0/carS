@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project overview
 
-A hybrid car-listings search project: Elasticsearch for keyword/structured search, Qdrant for vector/semantic search, with a fusion layer planned to combine both (not yet built). Currently in early scaffolding stage — only data ingestion exists, no query/API layer yet. The user has no coding background, so explanations in this repo (and in conversation) should stay in plain language.
+A hybrid car-listings search project: Elasticsearch for keyword/structured search, Qdrant for vector/semantic search, fused via Reciprocal Rank Fusion (RRF) behind a FastAPI endpoint. A future LLM-based fusion agent (smarter than fixed RRF) is planned but not built. The user has no coding background, so explanations in this repo (and in conversation) should stay in plain language.
 
 ## Commands
 
@@ -34,10 +34,17 @@ Regenerate the placeholder dataset:
 python3 data/generate_sample_data.py    # overwrites data/car_listings.json, seeded (random.seed(42))
 ```
 
+Run the search API (requires data already loaded, above):
+```bash
+cd backend
+uvicorn main:app --reload      # then see http://localhost:8000/docs for interactive testing
+```
+
 Sanity checks:
 ```bash
 curl "http://localhost:9200/car_listings/_search?q=make:Toyota&pretty"
 curl "http://localhost:6333/collections/car_listings"
+curl -X POST http://localhost:8000/search -H "Content-Type: application/json" -d '{"query": "spacious family SUV", "top_k": 5}'
 ```
 
 There is no test suite, linter, or build step yet.
@@ -49,3 +56,4 @@ There is no test suite, linter, or build step yet.
 - Elasticsearch and Qdrant are loaded as two independent, unsynchronized copies of the same data — `load_elasticsearch.py` indexes structured fields (make/model as `keyword`, description as `text`), while `load_qdrant.py` embeds only the `description` field into a 384-dim vector (via local `sentence-transformers` model `all-MiniLM-L6-v2`, no API key/cost) and stores the full listing as Qdrant payload. Point/document IDs match `id` in the source JSON in both stores, which is what will let a future fusion layer correlate results across the two.
 - No embedding API key is used by design (see `.env.example`) — this was a deliberate choice to keep local dev free of paid dependencies; if a hosted embedding provider is ever introduced, `EMBEDDING_MODEL` in `.env`/`config.py` is the intended override point.
 - `.env` (real secrets) is gitignored; `.env.example` is the template and must be kept in sync whenever new config vars are added.
+- `backend/search.py` (`HybridSearcher`) is the fusion layer: it loads the same `sentence-transformers` model used at ingestion time (must stay in sync with whatever embedded the Qdrant vectors, or similarity scores become meaningless), runs `keyword_search` (ES `multi_match` on description/make/model) and `semantic_search` (Qdrant nearest-neighbor) independently at `top_k * 2` each, then merges with RRF (`RRF_K = 60`, the standard default) — not by combining raw scores, since ES relevance scores and cosine similarities aren't on comparable scales. `backend/main.py` is a thin FastAPI wrapper exposing this as `POST /search`; it instantiates one `HybridSearcher` (and therefore loads the embedding model) at process startup, not per-request.
