@@ -85,10 +85,41 @@ This is fake data for development only. Regenerate it anytime with:
 python3 data/generate_sample_data.py
 ```
 
+## Loading the sample data into the databases
+
+Once Elasticsearch and Qdrant are running (see above), set up a Python virtual environment and load the data:
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate          # on Windows: .venv\Scripts\activate
+pip install -r backend/requirements.txt
+
+cd backend
+python3 load_elasticsearch.py      # loads the 60 listings into Elasticsearch
+python3 load_qdrant.py             # embeds descriptions locally and loads them into Qdrant
+```
+
+`load_qdrant.py` uses a small free local embedding model (`sentence-transformers`,
+model `all-MiniLM-L6-v2`) to turn each listing's `description` text into a 384-number
+vector — no API key or internet cost required. The first run downloads the model
+(~90MB) and caches it.
+
+Both scripts are safe to re-run — they delete and recreate the index/collection each
+time, so you always end up with a clean copy of the current `data/car_listings.json`.
+
+**Quick sanity checks:**
+
+```bash
+# Elasticsearch: find Toyotas
+curl "http://localhost:9200/car_listings/_search?q=make:Toyota&pretty"
+
+# Qdrant: see collection stats
+curl "http://localhost:6333/collections/car_listings"
+```
+
 ## What's next
 
 Future steps (not yet done):
 
-- Backend code to load `car_listings.json` into Elasticsearch and Qdrant.
-- A simple search API that queries both and merges results.
+- A simple search API that queries both Elasticsearch and Qdrant and merges results.
 - The "fusion agent" that intelligently combines keyword and semantic results.
