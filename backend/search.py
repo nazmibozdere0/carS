@@ -1,8 +1,7 @@
 """
-Hybrid search logic: queries Elasticsearch (keyword) and Qdrant (semantic)
-separately, then merges the two ranked lists into one using Reciprocal Rank
-Fusion (RRF) — a simple, well-known way to combine rankings from different
-search engines without needing their scores to be on the same scale.
+Query logic for the two underlying search engines. Each method returns its
+own raw ranked results — merging across engines happens one layer up (in an
+agent), not here.
 """
 from elasticsearch import Elasticsearch
 from qdrant_client import QdrantClient
@@ -16,10 +15,8 @@ from config import (
     EMBEDDING_MODEL,
 )
 
-RRF_K = 60  # standard constant used in reciprocal rank fusion
 
-
-class HybridSearcher:
+class CarSearcher:
     def __init__(self):
         self.es = Elasticsearch(ELASTICSEARCH_URL)
         self.qdrant = QdrantClient(url=QDRANT_URL)
@@ -41,26 +38,3 @@ class HybridSearcher:
             collection_name=QDRANT_COLLECTION, query=vector, limit=top_k
         )
         return [point.payload for point in results.points]
-
-    def hybrid_search(self, query: str, top_k: int = 5) -> list[dict]:
-        """Runs both searches and fuses the rankings with RRF."""
-        keyword_results = self.keyword_search(query, top_k=top_k * 2)
-        semantic_results = self.semantic_search(query, top_k=top_k * 2)
-
-        scores: dict[int, float] = {}
-        listings_by_id: dict[int, dict] = {}
-
-        for rank, listing in enumerate(keyword_results):
-            scores[listing["id"]] = scores.get(listing["id"], 0) + 1 / (RRF_K + rank)
-            listings_by_id[listing["id"]] = listing
-
-        for rank, listing in enumerate(semantic_results):
-            scores[listing["id"]] = scores.get(listing["id"], 0) + 1 / (RRF_K + rank)
-            listings_by_id[listing["id"]] = listing
-
-        ranked_ids = sorted(scores, key=lambda listing_id: scores[listing_id], reverse=True)
-
-        return [
-            {**listings_by_id[listing_id], "hybrid_score": round(scores[listing_id], 5)}
-            for listing_id in ranked_ids[:top_k]
-        ]

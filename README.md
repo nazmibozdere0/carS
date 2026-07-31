@@ -127,32 +127,52 @@ uvicorn main:app --reload
 ```
 
 Open **http://localhost:8000/docs** in a browser — this is an interactive test
-page (Swagger UI) generated automatically by the API framework. Expand the
-`POST /search` endpoint, click "Try it out", enter a query like:
+page (Swagger UI) generated automatically by the API framework. There are two
+endpoints, each returning its own raw ranked results (no merging happens
+here anymore — that's the agent's job, see below):
 
-```json
-{ "query": "spacious family SUV with good fuel economy", "top_k": 5 }
-```
+- `GET /search/keyword?query=...&top_k=5` — Elasticsearch only.
+- `GET /search/semantic?query=...&top_k=5` — Qdrant only.
 
-and click "Execute" to see ranked results — no command line needed.
-
-Or from the terminal:
+From the terminal:
 
 ```bash
-curl -X POST http://localhost:8000/search \
-  -H "Content-Type: application/json" \
-  -d '{"query": "spacious family SUV with good fuel economy", "top_k": 5}'
+curl "http://localhost:8000/search/keyword?query=spacious+family+SUV&top_k=5"
+curl "http://localhost:8000/search/semantic?query=spacious+family+SUV&top_k=5"
 ```
 
-### How the hybrid search works
+- **Keyword search** (Elasticsearch) matches against `description`, `make`, `model` — good at exact words, weak at synonyms/meaning.
+- **Semantic search** (Qdrant) embeds the query into a vector and finds nearest neighbors by meaning — good at natural-language queries, but doesn't guarantee exact attribute matches (e.g. asking for a specific color can still surface other colors, since the embedding captures the overall meaning of the sentence, not individual attributes).
 
-1. The query text is sent to **Elasticsearch** as a keyword/text match (against `description`, `make`, `model`) — good at exact words.
-2. The same query text is embedded into a vector and sent to **Qdrant** for a semantic nearest-neighbor search — good at matching meaning, even with different wording.
-3. Both ranked lists are merged with **Reciprocal Rank Fusion (RRF)**: each listing gets a score based on how high it ranked in each list (`1 / (60 + rank)`, summed across both lists), then the merged list is sorted by that combined score. A listing that ranks well in both searches rises to the top.
+## MCP servers
+
+Each search endpoint is also wrapped as its own MCP server, so an agent (or
+any MCP-compatible client) can call it as a tool:
+
+- `backend/mcp_servers/keyword_search_mcp.py` — exposes one tool, `keyword_search`, which calls `GET /search/keyword`.
+- `backend/mcp_servers/semantic_search_mcp.py` — exposes one tool, `semantic_search`, which calls `GET /search/semantic`.
+
+Both are thin wrappers — they call the running search API over HTTP rather
+than talking to Elasticsearch/Qdrant directly, so **the search API
+(`uvicorn main:app`) must already be running** before starting either MCP
+server.
+
+Test either one standalone with the MCP Inspector (a browser-based test
+client for MCP tools, install via `pip install "mcp[cli]"`, requires `uv` —
+`pip install uv` — and Node's `npx` on your PATH):
+
+```bash
+cd backend
+mcp dev mcp_servers/keyword_search_mcp.py    # or semantic_search_mcp.py
+```
+
+This prints a local URL with an auth token — open it, click **Connect**, go
+to the **Tools** tab, and run the tool with a sample query to see the raw
+JSON response.
 
 ## What's next
 
 Future steps (not yet done):
 
-- Structured filters in the API (year range, price range, fuel type) alongside the free-text query.
-- A smarter fusion agent (e.g. an LLM that reasons over both result sets) instead of the fixed RRF formula.
+- Structured filters in the API (year range, price range, fuel type, color as its own field) alongside the free-text query.
+- A fusion agent that calls both MCP tools and combines/reasons over their results (replacing the earlier fixed Reciprocal Rank Fusion approach, which merged results directly in the API).
