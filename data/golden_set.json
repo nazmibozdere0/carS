@@ -1,0 +1,436 @@
+[
+  {
+    "query": "Diesel cars under $10,000",
+    "structured_filters": {
+      "fuel_type": "Diesel",
+      "max_price": 10000
+    },
+    "semantic_query_text": "affordable diesel car under $10,000",
+    "proposed_relevant_ids": [
+      2,
+      38
+    ],
+    "proposal_reason": "Only listings with fuel_type=Diesel and price strictly below 10000 (id 6 is Diesel but priced at 10100, just over the line \u2014 worth double-checking whether 'under' should be inclusive).",
+    "relevant_listing_ids": [
+      2,
+      38
+    ]
+  },
+  {
+    "query": "Electric cars from 2020 or newer",
+    "structured_filters": {
+      "fuel_type": "Electric",
+      "min_year": 2020
+    },
+    "semantic_query_text": "a recent electric car, 2020 model year or newer",
+    "proposed_relevant_ids": [
+      8,
+      24,
+      36,
+      47,
+      60
+    ],
+    "proposal_reason": "fuel_type=Electric and year >= 2020.",
+    "relevant_listing_ids": [
+      8,
+      24,
+      36,
+      47,
+      60
+    ]
+  },
+  {
+    "query": "Cars under $20,000 with less than 70,000 miles",
+    "structured_filters": {
+      "max_price": 20000,
+      "max_mileage": 70000
+    },
+    "semantic_query_text": "an affordable car under $20,000 with fairly low mileage",
+    "proposed_relevant_ids": [
+      5,
+      8,
+      10,
+      14,
+      16,
+      19,
+      23,
+      35,
+      39,
+      43,
+      46,
+      49,
+      52,
+      54,
+      59
+    ],
+    "proposal_reason": "price <= 20000 AND mileage <= 70000. Replaces an earlier draft of this query that used a price-range (min_price + max_price) filter \u2014 min_price isn't supported by the API, so this version uses only the two supported numeric filters (max_price, max_mileage) together, which is still a good multi-filter structural test case.",
+    "relevant_listing_ids": [
+      5,
+      8,
+      10,
+      14,
+      16,
+      19,
+      23,
+      35,
+      39,
+      43,
+      46,
+      49,
+      52,
+      54,
+      59
+    ]
+  },
+  {
+    "query": "Cars with less than 30,000 miles",
+    "structured_filters": {
+      "max_mileage": 30000
+    },
+    "semantic_query_text": "a car with very low mileage, under 30,000 miles",
+    "proposed_relevant_ids": [
+      5,
+      13,
+      18,
+      24,
+      44,
+      46,
+      58,
+      60
+    ],
+    "proposal_reason": "mileage strictly below 30000.",
+    "relevant_listing_ids": [
+      5,
+      13,
+      18,
+      24,
+      44,
+      46,
+      58,
+      60
+    ]
+  },
+  {
+    "query": "2024 model year cars",
+    "structured_filters": {
+      "min_year": 2024
+    },
+    "semantic_query_text": "a brand new 2024 model year car",
+    "proposed_relevant_ids": [
+      5,
+      13,
+      18,
+      24,
+      44,
+      60
+    ],
+    "proposal_reason": "year == 2024, expressed with min_year alone since max_year isn't supported by the API. This still works cleanly today because no listing in the dataset is newer than 2024 \u2014 if a newer model year were ever added to the dataset, this query would need max_year too.",
+    "relevant_listing_ids": [
+      5,
+      13,
+      18,
+      24,
+      44,
+      60
+    ]
+  },
+  {
+    "query": "Cars under $6,000",
+    "structured_filters": {
+      "max_price": 6000
+    },
+    "semantic_query_text": "a very cheap car under $6,000",
+    "proposed_relevant_ids": [
+      15,
+      26,
+      29,
+      57
+    ],
+    "proposal_reason": "price strictly below 6000.",
+    "relevant_listing_ids": [
+      15,
+      26,
+      29,
+      57
+    ]
+  },
+  {
+    "query": "Gasoline sedans under $15,000",
+    "structured_filters": {
+      "fuel_type": "Gasoline",
+      "max_price": 15000
+    },
+    "semantic_query_text": "an affordable gasoline sedan under $15,000",
+    "proposed_relevant_ids": [
+      3,
+      7,
+      12
+    ],
+    "proposal_reason": "fuel_type=Gasoline, price < 15000, and model is one of the sedan-body models in the dataset (Malibu, Civic, 3 Series). Note: body type (sedan/SUV/etc.) isn't its own structured field -- I inferred it from the model name, so please double check my sedan classification.",
+    "relevant_listing_ids": [
+      3,
+      7,
+      12
+    ]
+  },
+  {
+    "query": "Hybrid vehicles",
+    "structured_filters": {
+      "fuel_type": "Hybrid"
+    },
+    "semantic_query_text": "a hybrid car",
+    "proposed_relevant_ids": [
+      14,
+      19,
+      29,
+      34,
+      37,
+      39,
+      41,
+      43,
+      44,
+      49,
+      50,
+      53,
+      58,
+      59
+    ],
+    "proposal_reason": "fuel_type=Hybrid, no other constraints. Purely structural -- a good sanity-check query since it's a plain exact-match filter with no ambiguity.",
+    "relevant_listing_ids": [
+      14,
+      19,
+      29,
+      34,
+      37,
+      39,
+      41,
+      43,
+      44,
+      49,
+      50,
+      53,
+      58,
+      59
+    ]
+  },
+  {
+    "query": "Spacious family car with lots of room",
+    "structured_filters": {},
+    "semantic_query_text": "spacious family car with lots of room",
+    "proposed_relevant_ids": [
+      5,
+      39,
+      42,
+      55,
+      57
+    ],
+    "proposal_reason": "Descriptions literally contain the phrase 'Perfect for families needing extra space'. Flagging id 57 as odd -- it's a Ford Mustang (2-door coupe), which is a strange fit for 'family car' despite the description text; this looks like a quirk of the synthetic data generator randomly pairing a seller-note phrase with a model, worth deciding whether to keep or drop.",
+    "relevant_listing_ids": [
+      5,
+      39,
+      42,
+      55,
+      57
+    ]
+  },
+  {
+    "query": "Reliable commuter car with good fuel economy",
+    "structured_filters": {},
+    "semantic_query_text": "reliable commuter car with good fuel economy",
+    "proposed_relevant_ids": [
+      8,
+      9,
+      18,
+      28,
+      37,
+      41,
+      52
+    ],
+    "proposal_reason": "Descriptions literally contain 'Great commuter car with excellent fuel economy'.",
+    "relevant_listing_ids": [
+      8,
+      9,
+      18,
+      28,
+      37,
+      41,
+      52
+    ]
+  },
+  {
+    "query": "Off-road capable SUV",
+    "structured_filters": {},
+    "semantic_query_text": "an off-road capable SUV",
+    "proposed_relevant_ids": [
+      21,
+      28
+    ],
+    "proposal_reason": "Jeep Wrangler (21) and Grand Cherokee (28) are the models most associated with off-road capability. Borderline candidates I did NOT include but you may want to reconsider: Subaru Outback (16, 30, 42) and Toyota RAV4 (26, 32, 33), which have all-wheel drive but are more crossover than true off-roader.",
+    "relevant_listing_ids": [
+      21,
+      28
+    ]
+  },
+  {
+    "query": "Fuel-efficient electric vehicle for daily commuting",
+    "structured_filters": {
+      "fuel_type": "Electric"
+    },
+    "semantic_query_text": "a fuel-efficient electric vehicle for daily commuting",
+    "proposed_relevant_ids": [
+      8,
+      9
+    ],
+    "proposal_reason": "fuel_type=Electric AND description contains the 'commuter car' phrase -- a combined structural+semantic case, useful for testing whether fusion correctly favors listings that satisfy both signals over electrics that only satisfy the filter.",
+    "relevant_listing_ids": [
+      8,
+      9
+    ]
+  },
+  {
+    "query": "Car in excellent condition with low mileage",
+    "structured_filters": {
+      "max_mileage": 30000
+    },
+    "semantic_query_text": "a car in excellent condition with low mileage",
+    "proposed_relevant_ids": [
+      5,
+      13,
+      18,
+      24,
+      46,
+      58,
+      60
+    ],
+    "proposal_reason": "mileage < 30000 AND description's condition phrase is 'excellent condition', 'like new condition', or 'very good condition' (treated as semantically equivalent to 'excellent'). Excluded id 44 (mileage 27169, but condition phrase is just 'good condition', which reads weaker -- your call whether to include it.",
+    "relevant_listing_ids": [
+      5,
+      13,
+      18,
+      24,
+      46,
+      58,
+      60
+    ]
+  },
+  {
+    "query": "Sporty coupe",
+    "structured_filters": {},
+    "semantic_query_text": "a sporty coupe",
+    "proposed_relevant_ids": [
+      11,
+      57
+    ],
+    "proposal_reason": "The only two-door/coupe-style model in the dataset is the Ford Mustang (ids 11 and 57).",
+    "relevant_listing_ids": [
+      11,
+      57
+    ]
+  },
+  {
+    "query": "Pickup truck for hauling cargo",
+    "structured_filters": {},
+    "semantic_query_text": "a pickup truck for hauling cargo",
+    "proposed_relevant_ids": [
+      13
+    ],
+    "proposal_reason": "The only pickup truck model in the dataset is the Ford F-150 (id 13).",
+    "relevant_listing_ids": [
+      13
+    ]
+  },
+  {
+    "query": "Luxury sedan with premium features",
+    "structured_filters": {},
+    "semantic_query_text": "a luxury sedan with premium features",
+    "proposed_relevant_ids": [
+      4,
+      22,
+      27,
+      40,
+      48,
+      53,
+      60
+    ],
+    "proposal_reason": "Make is Audi/BMW/Mercedes-Benz/Lexus, model is a sedan-body model (A4, 3 Series, 5 Series, C-Class, E-Class, RX 350), and description mentions 'premium sound system' or 'leather seats'. This is the most subjective query in the set -- 'luxury' and 'premium features' are judgment calls, please adjust freely.",
+    "relevant_listing_ids": [
+      4,
+      22,
+      27,
+      40,
+      48,
+      53,
+      60
+    ]
+  },
+  {
+    "query": "All-wheel drive car for winter driving",
+    "structured_filters": {},
+    "semantic_query_text": "an all-wheel drive car good for winter driving",
+    "proposed_relevant_ids": [
+      1,
+      2,
+      5,
+      7,
+      13,
+      15,
+      16,
+      23,
+      24,
+      26,
+      29,
+      34,
+      40,
+      41,
+      44,
+      46,
+      47,
+      49,
+      53,
+      59
+    ],
+    "proposal_reason": "Description contains 'all-wheel drive' as an equipment feature. This is a broad, mostly-literal keyword match rather than a deep semantic judgment -- good for testing keyword_search recall specifically.",
+    "relevant_listing_ids": [
+      1,
+      2,
+      5,
+      7,
+      13,
+      15,
+      16,
+      23,
+      24,
+      26,
+      29,
+      34,
+      40,
+      41,
+      44,
+      46,
+      47,
+      49,
+      53,
+      59
+    ]
+  },
+  {
+    "query": "Hybrid SUV for a family road trip",
+    "structured_filters": {
+      "fuel_type": "Hybrid"
+    },
+    "semantic_query_text": "a hybrid SUV for a family road trip",
+    "proposed_relevant_ids": [
+      14,
+      39,
+      53,
+      59
+    ],
+    "proposal_reason": "fuel_type=Hybrid AND model is an SUV-body model (Sportage, RX 350, Explorer). Combined structural+semantic case, similar in spirit to the electric-commuter query above.",
+    "relevant_listing_ids": [
+      14,
+      39,
+      53,
+      59
+    ]
+  }
+]

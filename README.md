@@ -4,7 +4,8 @@ A hobby project exploring **hybrid search** for car listings:
 
 - **Elasticsearch** — keyword and structured search (e.g. "make = Toyota AND price < 20000").
 - **Qdrant** — vector database for semantic search (e.g. "spacious family SUV with good gas mileage" matching on meaning, not just keywords).
-- A future **fusion agent** that combines results from both to give better answers than either alone.
+- An **orchestrator agent** that extracts search arguments with an LLM, then deterministically calls both engines and a **fusion** step (Reciprocal Rank Fusion) to combine results.
+- A **golden evaluation set** + `eval.py` script to measure retrieval quality (precision/recall/MRR) for each engine and for the hybrid combination.
 
 This is a learning project, built one step at a time.
 
@@ -12,10 +13,12 @@ This is a learning project, built one step at a time.
 
 ```
 carS/
-├── backend/              # Application code (search logic, API, ingestion scripts) — to be built
+├── backend/              # Application code (search logic, API, MCP servers, orchestrator, eval)
 ├── data/
 │   ├── car_listings.json         # 60 sample/placeholder car listings for local development
-│   └── generate_sample_data.py   # Script that generated the sample data (re-run to regenerate)
+│   ├── generate_sample_data.py   # Script that generated the sample data (re-run to regenerate)
+│   └── golden_set.json           # Hand-reviewed queries + known-relevant listing IDs, for retrieval evaluation
+├── results/              # eval.py output (eval_run_<timestamp>.json per run)
 ├── docker-compose.yml    # Spins up local Elasticsearch + Qdrant
 ├── .env.example          # Template for environment variables / API keys (copy to .env)
 ├── .gitignore
@@ -250,9 +253,49 @@ listing ID, and the final list is sorted by that combined score — so a
 listing found by only one engine can still place, but one confirmed by
 both engines almost always ranks higher.
 
+## Evaluating retrieval quality
+
+`data/golden_set.json` is a hand-reviewed set of 18 test queries (mix of
+structural, e.g. "Diesel cars under $10,000", and semantic, e.g. "spacious
+family car with lots of room"), each with a `relevant_listing_ids` list —
+the listing IDs a human decided are actually correct answers. Each entry
+also has `structured_filters` (for keyword search) and
+`semantic_query_text` (for semantic search), pre-split so the eval script
+doesn't need an LLM to interpret the query.
+
+`backend/eval.py` runs every golden-set query through keyword search
+(filters only, no free text), semantic search (free text only, no
+filters), and fusion — directly via the MCP tools, no LLM/orchestrator
+involved, so results are fully deterministic and reproducible run to run.
+For each query and method it computes precision@5, recall@5, MRR, and a
+`composite_score` (their average); each method's `total_score` is the
+average of its composite scores across all queries.
+
+```bash
+cd backend
+python3 eval.py
+```
+
+This requires the search API running first (same as the orchestrator).
+Output: a per-query table of composite scores per method, a totals table
+ranking the three methods, and a full JSON dump at
+`results/eval_run_<timestamp>.json` (every query's raw metrics + retrieved
+IDs, plus the totals).
+
+Findings from the current golden set: keyword search wins decisively on
+purely structural queries (it has hard filters, semantic search here
+doesn't); semantic search wins on purely descriptive queries with no
+filters (keyword search falls back to matching everything, unranked);
+hybrid comes out on top overall since it benefits from both signals when
+they agree, but a few queries score 0 across all three methods (e.g. "Off-
+road capable SUV", "Sporty coupe") — neither engine has a real signal for
+body-style concepts the dataset doesn't record as a structured field
+(that's what motivates the color/body-type filter idea below).
+
 ## What's next
 
 Future steps (not yet done):
 
 - A color filter (currently only free-text inside `description`, not its own structured field).
+- A body-type/style field (SUV, sedan, coupe, pickup, etc.) — the golden set's queries about "off-road SUV" or "sporty coupe" currently score 0 across all methods, since body style is only implicit in the model name, not a searchable field.
 - Smarter relaxation: currently a relaxed filter is dropped entirely rather than loosened gradually (e.g. widening a price cap by a percentage instead of removing it outright).
