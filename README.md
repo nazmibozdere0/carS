@@ -134,15 +134,20 @@ here anymore — that's the agent's job, see below):
 - `GET /search/keyword?query=...&top_k=5` — Elasticsearch only.
 - `GET /search/semantic?query=...&top_k=5` — Qdrant only.
 
+Both also accept structured filter parameters that are **actually enforced**
+(not just hinted at in text): `max_mileage`, `max_price`, `min_year`,
+`fuel_type` (exact match, one of `Gasoline`/`Diesel`/`Hybrid`/`Electric`).
+
 From the terminal:
 
 ```bash
 curl "http://localhost:8000/search/keyword?query=spacious+family+SUV&top_k=5"
 curl "http://localhost:8000/search/semantic?query=spacious+family+SUV&top_k=5"
+curl "http://localhost:8000/search/keyword?max_price=8000&fuel_type=Diesel"
 ```
 
-- **Keyword search** (Elasticsearch) matches against `description`, `make`, `model` — good at exact words, weak at synonyms/meaning.
-- **Semantic search** (Qdrant) embeds the query into a vector and finds nearest neighbors by meaning — good at natural-language queries, but doesn't guarantee exact attribute matches (e.g. asking for a specific color can still surface other colors, since the embedding captures the overall meaning of the sentence, not individual attributes).
+- **Keyword search** (Elasticsearch) matches free text against `description`, `make`, `model` — good at exact words, weak at synonyms/meaning. Filters are applied as hard constraints (range/exact-match), separate from the free-text match.
+- **Semantic search** (Qdrant) embeds the free text into a vector and finds nearest neighbors by meaning — good at natural-language queries. Filters are applied to Qdrant's stored payload, so a hard constraint like fuel type is enforced here too, not left to text similarity.
 
 ## MCP servers
 
@@ -172,17 +177,33 @@ JSON response.
 
 ## Orchestrator agent
 
-`backend/orchestrator.py` is an agent (built with `strands-agents`, using
-Claude as the LLM) that connects to all three MCP servers as tools and,
-for a single natural-language query, calls them in sequence:
+`backend/orchestrator.py` (built with `strands-agents`, using Claude as the
+LLM) turns a natural-language query into a final ranked list in two stages:
 
-1. `keyword_search` — raw Elasticsearch results.
-2. `semantic_search` — raw Qdrant results.
-3. `fuse_results` — merges the two raw lists above into one ranked list.
+1. **One LLM call, to extract structured arguments** — a short keyword-style
+   text, a near-verbatim semantic text, and whichever of the four hard
+   filters (`max_mileage`, `max_price`, `min_year`, `fuel_type`) the user
+   actually mentioned. This uses `strands-agents`' `structured_output_model`
+   (a Pydantic schema), so the LLM's output is a validated object, not
+   free-form text.
+2. **A deterministic Python loop** — everything after extraction is plain
+   code, not further LLM reasoning. This is deliberate: the loop's safety
+   guarantees need to hold no matter what the LLM does, so they're enforced
+   in code rather than trusted to a system prompt.
 
-The LLM's job is only to pick good arguments for steps 1 and 2, and to pass
-their outputs into step 3 — the actual merging in step 3 is deterministic
-math (RRF), not an LLM decision.
+The loop, per query:
+
+- Call `keyword_search` and `semantic_search` with the current filters,
+  then `fuse_results` to merge them.
+- **Stop** if fusion returned **5 or more** listings — that's the answer.
+- Otherwise, **relax the next filter** in a fixed order — `mileage` →
+  `price` → `year` → `fuel_type` — dropping it entirely and trying again.
+  Each filter is only ever relaxed once, and the exact same filter
+  combination is never retried.
+- **Hard cap of 3 iterations.** If the cap is hit without reaching 5
+  results, the loop stops and returns whatever it found on the last
+  attempt with a "no exact match found, showing closest results" message
+  — it never errors and never loops further.
 
 Requires:
 
@@ -196,25 +217,29 @@ Run it with a natural-language query as an argument:
 
 ```bash
 cd backend
-python3 orchestrator.py "family car, low mileage, under 300000 TL, diesel"
+python3 orchestrator.py "diesel car from 2023 or newer, under 8000 dollars, with less than 20000 miles"
 ```
 
-Output shows one section per tool call, in order: the arguments sent and the
-raw result returned, ending with `fuse_results`' merged ranking. In testing
-with a few different queries:
+Output shows the extracted arguments, then one line per loop iteration
+(which filter was relaxed to reach it, and how many results came back
+after fusion), then the final result list. Tested scenarios:
 
-- A listing that ranked well in **both** raw lists (e.g. a diesel BMW X3
-  that was #1 in keyword results and #3 in semantic results) rose to the
-  top of the merged list, with roughly double the score of anything that
-  only appeared in one list.
-- If the LLM sends a query `keyword_search` can't match at all (e.g. it
-  forgets to translate a non-English query, so Elasticsearch — whose data
-  is in English — returns zero hits), `fuse_results` doesn't fail; it just
-  falls back to ranking by whichever list actually has results.
-- Fusion only re-ranks what the two searches already found — it can't fix
-  a bad match either engine made (e.g. a car well outside the requested
-  price range still shows up, since neither engine currently filters on
-  price; see "What's next" below).
+- **Deliberately narrow query** (above): iteration 1 (all 4 filters) → 0
+  results; iteration 2 (mileage relaxed) → 0; iteration 3 (price relaxed)
+  → 1. Cap reached without hitting 5, so the loop stopped and returned
+  that 1 result with the "closest results" message — no 4th attempt, no
+  error.
+- **Moderately narrow query** (`"diesel car under 12000 dollars with less
+  than 60000 miles"`): iteration 1 → 0, iteration 2 (mileage relaxed) → 4,
+  iteration 3 (price relaxed) → 5 — hit the termination condition exactly
+  at the last allowed iteration.
+- **Broad query with no filters** (`"spacious family SUV with good fuel
+  economy"`): iteration 1 already returns 5 — loop exits immediately,
+  nothing to relax.
+
+A listing found by **both** raw searches consistently rose to the top of
+the merged list (see the RRF explanation below) — this held both with and
+without active filters.
 
 ### How Reciprocal Rank Fusion (RRF) works
 
@@ -229,4 +254,5 @@ both engines almost always ranks higher.
 
 Future steps (not yet done):
 
-- Structured filters (year range, price range, fuel type, color as its own field) applied to both searches before fusion, so numeric constraints like "under 300000 TL" are actually enforced instead of just hinted at in text.
+- A color filter (currently only free-text inside `description`, not its own structured field).
+- Smarter relaxation: currently a relaxed filter is dropped entirely rather than loosened gradually (e.g. widening a price cap by a percentage instead of removing it outright).

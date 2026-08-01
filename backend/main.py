@@ -19,12 +19,40 @@ def health():
 
 
 @app.get("/search/keyword")
-def search_keyword(query: str, top_k: int = 5):
-    results = searcher.keyword_search(query, top_k=top_k)
+def search_keyword(
+    query: str = "",
+    top_k: int = 5,
+    max_mileage: int | None = None,
+    max_price: int | None = None,
+    min_year: int | None = None,
+    fuel_type: str | None = None,
+):
+    results = searcher.keyword_search(
+        query,
+        top_k=top_k,
+        max_mileage=max_mileage,
+        max_price=max_price,
+        min_year=min_year,
+        fuel_type=fuel_type,
+    )
     return {"query": query, "results": results}
 
 
 @app.get("/search/semantic")
-def search_semantic(query: str, top_k: int = 5):
-    results = searcher.semantic_search(query, top_k=top_k)
+def search_semantic(
+    query: str,
+    top_k: int = 5,
+    max_mileage: int | None = None,
+    max_price: int | None = None,
+    min_year: int | None = None,
+    fuel_type: str | None = None,
+):
+    results = searcher.semantic_search(
+        query,
+        top_k=top_k,
+        max_mileage=max_mileage,
+        max_price=max_price,
+        min_year=min_year,
+        fuel_type=fuel_type,
+    )
     return {"query": query, "results": results}
